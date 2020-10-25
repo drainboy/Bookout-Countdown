@@ -1,7 +1,7 @@
 # Bookout-Countdown
 A simple python program to countdown the small things towards bookout
 
-Live version: https://repl.it/repls/FrivolousCompleteEllipses#main.py
+Live version: https://repl.it/@drainboy/BookoutCountdown#main.py
 
 # TODO
 1. Alignment of text based on max width
