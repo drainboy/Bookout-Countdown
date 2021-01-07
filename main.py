@@ -1,3 +1,10 @@
+"""
+A simple python script to display the simple things to bookout
+
+Author: Eldrian
+"""
+
+
 import pendulum
 import datetime
 from test import *
@@ -9,9 +16,11 @@ from bookoutitem import Time
 
 BOOKOUTITEMS = {}
 TIMEZONE = pendulum.timezone("Asia/Singapore")
+TIMEZONED = datetime.timezone(timedelta(hours = 8))
 BOOKOUT = {"day":4, "time": time(18,30,00)}
 BOOKIN = {"day":6, "time": time(21,00,00)}
 DINNER_ON_BOOKOUT = False
+WIDTH_SIZE = 51
 
 
 def init():
@@ -93,30 +102,55 @@ def update_bookoutitems(bookout_datetime):
 
 # print function
 # =========================================================================  
+def print_aligning(direction, word):
+    direction = direction.lower()
+    left_spaces = 0
+    half_width = WIDTH_SIZE//2
+    if direction in ["centre","middle","center"]:
+        left_spaces = (WIDTH_SIZE - len(word))//2
+    elif direction in ["left"]:
+        if len(word) <= half_width:
+            left_spaces = (half_width - len(word))//2
+    elif direction in ["right"]:
+        left_spaces = half_width
+        if len(word) <= half_width:
+            left_spaces += (half_width - len(word))//2
+
+    return left_spaces * " " + word
+
+
 def print_format():
+  now = datetime.datetime.now(TIMEZONED)
   num_of_meals_to_bookout = sum([meal.get_value() for meal in BOOKOUTITEMS["Meals"]])
-  hours_to_bookout = int(get_timedelta_to(BOOKOUT).total_seconds()/60/60)
+  hours_to_bookout = int(get_timedelta_to(BOOKOUT, now).total_seconds()/60/60)
   
   # Header
   # ==================================================================
-  print("\tBOOKOUT COUNTDOWN\n   Soon Bookout Street\n\t\tSingapore\n")
-  print(pendulum.now(TIMEZONE).to_day_datetime_string())
-  print("-"*30, "\n")
+  print(print_aligning("centre","BOOKOUT COUNTDOWN"))
+  print(print_aligning("centre","Soon Bookout Street"))
+  print(print_aligning("centre", "Singapore"))
+  print("\n",pendulum.now(TIMEZONE).to_day_datetime_string())
+  print("-"*WIDTH_SIZE, "\n")
   
   # Content
   # ==================================================================
   for item in BOOKOUTITEMS:
-    print(f"\t{item}\n")
+    print(print_aligning("left",item), "\n")
     for subitem in BOOKOUTITEMS[item]:
       if subitem.get_value() != 0:
-        print(subitem)
+          quantifier_left = print_aligning("left", "    "*2+subitem.get_quantifier())
+          subitem_right = " " * (WIDTH_SIZE//2 + 4) + subitem.get_name()
+          print(quantifier_left, subitem_right[len(quantifier_left):], "\n")
   
   # Summary
   # ==================================================================
-  print("-"*30, "\n")
-  print(f"\033[1m\tTotal:\t\t\t{str(num_of_meals_to_bookout).zfill(2)} meals\033[0m")
-  print(f"\033[1m\t\t\t\t\t{str(hours_to_bookout).zfill(2)} hours\033[0m")
-  print("\n   You can do it! Ganbatte!!!")
+  print("-"*WIDTH_SIZE, "\n")
+  total_left_aligned = print_aligning("left","Total:")
+  num_of_meals_right_aligned = print_aligning("right", f"{str(num_of_meals_to_bookout).zfill(2)} meals")
+  print(f"\033[1m{total_left_aligned}{num_of_meals_right_aligned[len(total_left_aligned):]}\033[0m")
+  hours_to_bookout_right_aligned = print_aligning('right',f'{str(hours_to_bookout).zfill(2)} hours')
+  print(f"\033[1m{hours_to_bookout_right_aligned}\033[0m\n")
+  print(print_aligning("centre","You can do it! Ganbatte!!!"))
 
 
 # main functions

@@ -1,19 +1,21 @@
+
+
 class BookoutItem:
   def __init__(self, category, *subitems):
     self.category = category
     self.subitem_list = []
     for subitem in subitems:
-      subitem_list.append(BookoutSubItem(subitem))
+      self.subitem_list.append(BookoutSubItem(subitem))
 
 
 class BookoutSubItem:
   def __init__(self, name):
     self.__name = name
     self.__value = 0
-    
-  def __str__(self):
-    return f"\t\t{self.get_value()}x\t\t{self.get_name()}\n"
+
   
+  def get_quantifier(self):
+      return f"{self.get_value()}x"
   
   def get_name(self):
     return self.__name
@@ -45,12 +47,8 @@ class Time(BookoutSubItem):
   def __init__(self, name):
     BookoutSubItem.__init__(self, name)
   
-  def __str__(self):
-    name = self.get_name()
-    value = self.get_value()
-    if value > 1:
-      name += "s"
-    return f"\t\t{value}\t\t{name}\n"
+  def get_quantifier(self):
+      return str(self.get_value()).zfill(2)
   
     
 
