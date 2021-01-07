@@ -1,8 +1,5 @@
 # Bookout-Countdown
 
-bookout
-: the only day that is greener on the other side
-
 A simple python program to countdown the small things towards bookout
 
 Live version: https://repl.it/@drainboy/BookoutCountdown#main.py
